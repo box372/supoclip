@@ -15,6 +15,7 @@ import { useBillingSummary } from "@/hooks/use-billing-summary";
 import { useSocialAccess } from "@/hooks/use-social-access";
 import { billingPlanMessageKey } from "@/lib/billing-plans";
 import { getUpgradeState } from "@/components/billing/upgrade-prompt";
+import { PERSONAL_MODE } from "@/lib/personal";
 import { fetchGenerations, timeAgo, type GenerationSummary } from "@/lib/generations";
 import { StatusBadge } from "@/components/app/status-badge";
 import { Announcements } from "@/components/announcements";
@@ -81,10 +82,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useAppTheme(Boolean(user));
   const admin = Boolean((user as { is_admin?: boolean } | undefined)?.is_admin);
   const socialAccess = useSocialAccess(Boolean(user));
-  const labeled = NAV.map((item) => ({ ...item, label: t(`nav.${item.labelKey}`) }));
+  // Personal installs have no social publishing, analytics or admin area.
+  const labeled = NAV
+    .filter((item) => !PERSONAL_MODE || (item.labelKey !== "social" && item.labelKey !== "analytics"))
+    .map((item) => ({ ...item, label: t(`nav.${item.labelKey}`) }));
   const nav = labeled.filter((item) => !item.social || socialAccess === true);
   const mobileNav = nav.filter((item) => item.mobile !== false);
-  const items = admin ? [...nav, { href: "/admin", label: t("nav.admin"), icon: Shield, match: (p: string) => p.startsWith("/admin") }] : nav;
+  const items = admin && !PERSONAL_MODE ? [...nav, { href: "/admin", label: t("nav.admin"), icon: Shield, match: (p: string) => p.startsWith("/admin") }] : nav;
 
   return (
     <div data-app-shell={user ? "" : undefined} className={cn(user && "flex min-h-dvh bg-canvas")}>
@@ -96,11 +100,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <Link href="/" className={cn("flex h-14 items-center gap-2 font-display text-lg font-bold tracking-tight", compact ? "justify-center" : "px-2")}>
-          <Image src="/logo.png" alt="" width={24} height={24} className="size-6 dark:invert" priority />
-          {!compact && "SupoClip"}
+          <Image src="/logo.png" alt="" width={24} height={24} className="size-6" priority />
+          {!compact && "ChunkVex AI"}
         </Link>
 
-        <SidebarLink compact={compact} href="/" label={t("nav.newGeneration")} shortcut="N" className="mb-4 mt-1 bg-foreground text-background hover:bg-foreground/90 hover:text-background">
+        <SidebarLink compact={compact} href="/" label={t("nav.newGeneration")} shortcut="N" className="mb-4 mt-1 brand-gradient-surface text-primary-foreground shadow-[0_10px_30px_-14px_rgba(154, 79, 255, 0.9)] hover:brightness-110 hover:text-primary-foreground">
           <Plus className="size-4" />
         </SidebarLink>
 
@@ -138,7 +142,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className={cn(user && "flex min-w-0 flex-1 flex-col", user && !immersive && "pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0")}>
         {user && !immersive ? <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur md:hidden">
           <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-            <Image src="/logo.png" alt="" width={22} height={22} className="size-[22px] dark:invert" />SupoClip
+            <Image src="/logo.png" alt="" width={22} height={22} className="size-[22px]" />ChunkVex AI
           </Link>
           <div className="flex items-center gap-1">
             <Announcements key={user.id} userId={user.id} compact />
@@ -239,7 +243,7 @@ function UserRow({ compact, name, email }: { compact: boolean; name?: string | n
   };
   return (
     <div className={cn("flex items-center gap-2 rounded-lg", compact ? "flex-col" : "px-1.5 py-1")}>
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-amber-400 text-xs font-semibold text-white">
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-blue text-xs font-semibold text-white">
         {initials(name, email)}
       </span>
       {!compact && (

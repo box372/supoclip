@@ -47,9 +47,9 @@ export async function generateMetadata(): Promise<Metadata> {
   },
   description: t("description"),
   metadataBase: new URL(getSiteUrl()),
-  applicationName: "SupoClip",
-  authors: [{ name: "SupoClip Team", url: getSiteUrl() }],
-  creator: "SupoClip Team",
+  applicationName: "ChunkVex AI",
+  authors: [{ name: "ChunkVex AI Team", url: getSiteUrl() }],
+  creator: "ChunkVex AI Team",
   publisher: COMPANY_NAME,
   category: t("category"),
   icons: {
@@ -61,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
   openGraph: {
     title: t("title"),
     description: t("openGraphDescription"),
-    siteName: "SupoClip",
+    siteName: "ChunkVex AI",
     type: "website",
   },
   twitter: {

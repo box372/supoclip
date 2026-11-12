@@ -1435,7 +1435,7 @@ function CaptionPreview({ thumbnail, fontFamily, fontSize, color }: { thumbnail:
       {thumbnail ? (
         <div className="absolute inset-0 scale-110 bg-cover bg-center blur-[2px]" style={{ backgroundImage: `url(${thumbnail})` }} />
       ) : (
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,oklch(0.55_0.05_50),oklch(0.22_0.01_50))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,#8a6957,#1f1916)]" />
       )}
       <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-black/40 to-transparent" />
       <p className="absolute inset-x-2 top-[10%] text-center text-[10px] font-bold leading-tight text-white drop-shadow">{t("previewHook")}</p>

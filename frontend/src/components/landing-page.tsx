@@ -34,6 +34,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { VIDEO_SOURCE_LABELS, VideoSourceIcon } from "@/components/video-source-icon";
 import { catalogKey } from "@/i18n/config";
 import { isLandingOnlyModeEnabled } from "@/lib/app-flags";
+import { PERSONAL_MODE } from "@/lib/personal";
 import {
   annualFullPrice,
   annualMonthlyEquivalent,
@@ -49,7 +50,7 @@ import {
   getMarketingLink,
   type MarketingLink,
 } from "@/lib/marketing-links";
-import { APP_STORE_URL, GITHUB_URL, HOSTED_APP_URL, PRODUCT_HUNT_BADGE_URL, PRODUCT_HUNT_URL } from "@/lib/site";
+import { APP_STORE_URL, GITHUB_URL, HOSTED_APP_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 type Translate = (key: string, values?: Record<string, string | number>) => string;
@@ -140,12 +141,23 @@ function getPlans(
   ];
 }
 
-function PrimaryCta({ authEnabled, label, hostedLabel, className }: {
+function PrimaryCta({ authEnabled, personalMode, label, hostedLabel, className }: {
   authEnabled: boolean;
+  personalMode?: boolean;
   label: string;
   hostedLabel: string;
   className?: string;
 }) {
+  if (personalMode) {
+    return (
+      <Button asChild size="lg" className={cn("h-12 rounded-full px-7 text-sm", className)}>
+        <Link href="/">
+          {label}
+          <ArrowRight className="size-4" />
+        </Link>
+      </Button>
+    );
+  }
   return authEnabled ? (
     <Button asChild size="lg" className={cn("h-12 rounded-full px-7 text-sm", className)}>
       <Link href="/sign-up">
@@ -172,6 +184,11 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const authEnabled = !isLandingOnlyModeEnabled;
+  const personalMode = PERSONAL_MODE;
+  // Paid plans and the affiliate program are not part of a personal install.
+  const navLinks = personalMode
+    ? NAV_LINKS.filter(({ key }) => key !== "pricing" && key !== "affiliate")
+    : NAV_LINKS;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 24);
@@ -182,7 +199,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {authEnabled && <CreatorOfferBanner />}
+      {authEnabled && !personalMode && <CreatorOfferBanner />}
 
       {/* ─── NAV ─── */}
       <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
@@ -190,17 +207,17 @@ export default function LandingPage() {
           className={cn(
             "mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full border pl-4 pr-2 transition-all duration-300",
             scrolled || mobileNavOpen
-              ? "border-border bg-background/80 shadow-[0_8px_30px_-12px_oklch(0.2_0.01_50/0.25)] backdrop-blur-xl"
+              ? "border-border bg-background/80 shadow-[0_8px_30px_-12px_rgba(26, 21, 18, 0.25)] backdrop-blur-xl"
               : "border-transparent bg-transparent",
           )}
         >
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-md dark:invert" />
-            <span className="font-display text-[17px] font-bold tracking-tight">SupoClip</span>
+            <Image src="/logo.png" alt="ChunkVex AI" width={24} height={24} className="rounded-md" />
+            <span className="font-display text-[17px] font-bold tracking-tight">ChunkVex AI</span>
           </Link>
 
           <div className="hidden items-center gap-1 xl:flex">
-            {NAV_LINKS.map(({ href, key }) => {
+            {navLinks.map(({ href, key }) => {
               const className =
                 "whitespace-nowrap rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
               return href.startsWith("#") ? (
@@ -212,7 +229,11 @@ export default function LandingPage() {
           </div>
 
           <div className="hidden items-center gap-1 xl:flex">
-            {authEnabled ? (
+            {personalMode ? (
+              <Button asChild size="sm" className="rounded-full px-4">
+                <Link href="/">{t("nav.getStarted")}</Link>
+              </Button>
+            ) : authEnabled ? (
               <>
                 <Button asChild variant="ghost" size="sm" className="rounded-full">
                   <Link href="/sign-in">{t("nav.signIn")}</Link>
@@ -245,7 +266,7 @@ export default function LandingPage() {
 
         {mobileNavOpen && (
           <div className="animate-rise mx-auto mt-2 max-w-6xl rounded-3xl border bg-background/95 p-3 shadow-lg backdrop-blur-xl xl:hidden">
-            {NAV_LINKS.map(({ href, key }) => {
+            {navLinks.map(({ href, key }) => {
               const className =
                 "block rounded-2xl px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
               return href.startsWith("#") ? (
@@ -255,7 +276,11 @@ export default function LandingPage() {
               );
             })}
             <div className="mt-2 grid grid-cols-2 gap-2 border-t pt-3">
-              {authEnabled ? (
+              {personalMode ? (
+                <Button asChild className="col-span-2 rounded-full">
+                  <Link href="/" onClick={() => setMobileNavOpen(false)}>{t("nav.getStarted")}</Link>
+                </Button>
+              ) : authEnabled ? (
                 <>
                   <Button asChild variant="outline" className="rounded-full">
                     <Link href="/sign-in" onClick={() => setMobileNavOpen(false)}>{t("nav.signIn")}</Link>
@@ -283,6 +308,13 @@ export default function LandingPage() {
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:radial-gradient(circle_at_1px_1px,currentColor_1px,transparent_0)] [background-size:28px_28px] [mask-image:linear-gradient(to_bottom,black,transparent_70%)]"
         />
+        {/* Violet and electric-blue aurora behind the headline */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-[18%] left-1/2 h-[560px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(154, 79, 255, 0.38),transparent)] blur-3xl" />
+          <div className="absolute -right-[8%] top-[12%] h-[420px] w-[520px] rounded-full bg-[radial-gradient(closest-side,rgba(0, 200, 255, 0.24),transparent)] blur-3xl" />
+          <div className="absolute -left-[10%] top-[34%] h-[360px] w-[460px] rounded-full bg-[radial-gradient(closest-side,rgba(154, 79, 255, 0.2),transparent)] blur-3xl" />
+        </div>
+
 
         <div className="relative mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-4xl text-center">
@@ -303,7 +335,7 @@ export default function LandingPage() {
             >
               {t("hero.titleLine1")}
               <br />
-              <span className="text-muted-foreground/70">{t("hero.titleLine2")}</span>
+              <span className="brand-gradient-text">{t("hero.titleLine2")}</span>
             </h1>
 
             <p
@@ -317,7 +349,7 @@ export default function LandingPage() {
               className="mt-9 flex flex-wrap items-center justify-center gap-3"
               style={{ animation: "landing-fade-in-up 0.7s ease-out 0.24s both" }}
             >
-              <PrimaryCta authEnabled={authEnabled} label={t("hero.startClipping")} hostedLabel={t("hero.useHosted")} />
+              <PrimaryCta authEnabled={authEnabled} personalMode={personalMode} label={t("hero.startClipping")} hostedLabel={t("hero.useHosted")} />
               <Button asChild variant="outline" size="lg" className="h-12 rounded-full bg-background px-7 text-sm">
                 <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                   <Github className="size-4" />
@@ -388,6 +420,7 @@ export default function LandingPage() {
       <PublishSection />
 
       {/* ─── PRICING ─── */}
+      {!personalMode && (
       <section id="pricing" className="scroll-mt-24 py-24 md:py-32">
         <div className="mx-auto max-w-6xl px-6">
           <SectionHeading
@@ -534,6 +567,7 @@ export default function LandingPage() {
           </Reveal>
         </div>
       </section>
+      )}
 
       <FaqSection />
 
@@ -575,7 +609,7 @@ export default function LandingPage() {
               </div>
               <pre className="overflow-x-auto p-6 font-mono text-[13px] leading-8">
                 <code>
-                  <span className="text-muted-foreground">$ </span>git clone https://github.com/FujiwaraChoki/supoclip{"\n"}
+                  <span className="text-muted-foreground">$ </span>git clone https://github.com/box372/supoclip{"\n"}
                   <span className="text-muted-foreground">$ </span>cd supoclip && cp .env.example .env{"\n"}
                   <span className="text-muted-foreground">{t("openSource.comment")}</span>{"\n"}
                   <span className="text-muted-foreground">$ </span>docker compose up -d --build{"\n"}
@@ -636,7 +670,7 @@ export default function LandingPage() {
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{t("cta.body")}</p>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-                <PrimaryCta authEnabled={authEnabled} label={t("nav.getStarted")} hostedLabel={t("nav.openHosted")} />
+                <PrimaryCta authEnabled={authEnabled} personalMode={personalMode} label={t("nav.getStarted")} hostedLabel={t("nav.openHosted")} />
                 <a
                   href={APP_STORE_URL}
                   target="_blank"
@@ -647,10 +681,6 @@ export default function LandingPage() {
                   <Image src="/app-store-badge.svg" alt={t("hero.appStoreAlt")} width={135} height={40} className="h-12 w-auto" />
                 </a>
               </div>
-              <a href={PRODUCT_HUNT_URL} target="_blank" rel="noopener noreferrer" className="mt-10 inline-block opacity-80 transition-opacity hover:opacity-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={PRODUCT_HUNT_BADGE_URL} alt={t("hero.productHuntAlt")} width={200} height={43} />
-              </a>
             </div>
           </div>
         </Reveal>

@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const url = `${getSiteUrl()}/terms`;
 
   return {
-    title: { absolute: `SupoClip.com ${t("terms.title")}` },
+    title: { absolute: `ChunkVex AI ${t("terms.title")}` },
     description: t("terms.metaDescription"),
     alternates: { canonical: url },
     openGraph: {
@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t("terms.ogDescription"),
       type: "website",
       url,
-      siteName: "SupoClip",
+      siteName: "ChunkVex AI",
     },
   };
 }
@@ -59,12 +59,12 @@ export default async function TermsOfServicePage() {
       <header className="border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg dark:invert" />
+            <Image src="/logo.png" alt="ChunkVex AI" width={24} height={24} className="rounded-lg" />
             <span
               className="text-lg font-bold tracking-tight"
               style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
             >
-              SupoClip
+              ChunkVex AI
             </span>
           </Link>
           <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
@@ -82,7 +82,7 @@ export default async function TermsOfServicePage() {
             className="text-4xl font-extrabold tracking-tight sm:text-5xl"
             style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
           >
-            SupoClip.com {t("terms.title")}
+            ChunkVex AI {t("terms.title")}
           </h1>
           <p className="text-sm text-muted-foreground">{t("lastUpdated", { date: updated })}</p>
           <p className="rounded-lg border bg-muted/40 px-4 py-3 text-sm leading-6 text-muted-foreground">

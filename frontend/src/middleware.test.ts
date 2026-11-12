@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { afterEach, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
-import { middleware } from "../middleware";
+import { middleware } from "./middleware";
 
 afterEach(() => vi.unstubAllEnvs());
 

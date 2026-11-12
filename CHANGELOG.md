@@ -1,8 +1,14 @@
 # Changelog
 
-What changed in SupoClip for people using the product. Newest dates are first.
+What changed in ChunkVex AI for people using the product. Newest dates are first.
 
 Add a line here when a pull request changes something a user can see. Use **New**, **Improved**, **Fixed**, or **Under the hood**, describe the change in plain language, and link the pull request. Skip internal-only work, or fold it into one **Under the hood** line. Do not include customer names, email addresses, user IDs, or anything else private.
+
+## 2026-11-12
+
+- **New:** A one-person installation mode removes sign-in, plans and social publishing, transcribes with local Whisper and picks clips without an AI provider. It is documented in `docs/PERSONAL_DEPLOY.md` with a free-host walkthrough and a real render check. ([repository](https://github.com/box372/supoclip))
+- **Improved:** The app's colours are sRGB hex values, so older Chromium builds on Windows 7 parse the theme instead of dropping it. ([repository](https://github.com/box372/supoclip))
+- **Improved:** The product is now ChunkVex AI, with a new logo, favicon, page titles, and a dark gaming-inspired design using violet and electric-blue accents across the homepage, app, emails, and loading screens. Clip discovery, vertical reframing, captions, the editor, and exports work as before. ([repository](https://github.com/box372/supoclip))
 
 ## 2026-11-10
 

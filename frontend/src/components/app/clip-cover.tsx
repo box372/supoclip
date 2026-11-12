@@ -40,7 +40,7 @@ export function ClipCover({ src, className, children }: {
           tabIndex={-1}
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_30%_20%,oklch(0.35_0.02_50),oklch(0.18_0.005_50))]">
+        <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#433831,#131110)]">
           <Film className="size-6 text-white/30" aria-hidden />
         </div>
       )}

@@ -1,10 +1,10 @@
-export const SITE_NAME = "SupoClip";
+export const SITE_NAME = "ChunkVex AI";
 export const COMPANY_NAME = "Shiori LLC";
 export const COMPANY_REGISTRATION_NUMBER = "10603065";
 export const COMPANY_REGISTERED_ADDRESS = "8 The Green, Suite B, Dover, DE 19901, United States";
-export const DEFAULT_SITE_URL = "https://www.supoclip.com";
+export const DEFAULT_SITE_URL = "https://chunkvex.ai";
 export const HOSTED_APP_URL = DEFAULT_SITE_URL;
-export const GITHUB_URL = "https://github.com/FujiwaraChoki/supoclip";
+export const GITHUB_URL = "https://github.com/box372/supoclip";
 export const APP_STORE_ID = "6784760040";
 export const APP_STORE_URL = `https://apps.apple.com/us/app/supoclip/id${APP_STORE_ID}`;
 export const PRODUCT_HUNT_URL =

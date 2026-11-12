@@ -192,6 +192,18 @@ class Config:
 
         self.self_host = self._get_bool_env("SELF_HOST", True)
         self.monetization_enabled = not self.self_host
+        # One-person installation: no sign-up, no billing, no social publishing.
+        self.personal_mode = self._get_bool_env("PERSONAL_MODE", False)
+        self.personal_user_id = (
+            os.getenv("PERSONAL_USER_ID", "personal-owner").strip() or "personal-owner"
+        )
+        self.personal_user_email = (
+            os.getenv("PERSONAL_USER_EMAIL", "owner@chunkvex.local").strip()
+            or "owner@chunkvex.local"
+        )
+        # Local, model-free clip selection. Off switches the pipeline to
+        # deterministic transcript windows instead of calling an LLM.
+        self.ai_analysis_enabled = self._get_bool_env("AI_ANALYSIS_ENABLED", True)
         self.backend_auth_secret = self._get_optional_env("BACKEND_AUTH_SECRET")
         self.allow_unsigned_backend_auth = self._get_bool_env(
             "ALLOW_UNSIGNED_BACKEND_AUTH", False
@@ -213,7 +225,7 @@ class Config:
         self.aws_access_key_id = self._get_optional_env("AWS_ACCESS_KEY_ID")
         self.aws_secret_access_key = self._get_optional_env("AWS_SECRET_ACCESS_KEY")
         self.ses_from_email = os.getenv(
-            "SES_FROM_EMAIL", "SupoClip <onboarding@example.com>"
+            "SES_FROM_EMAIL", "ChunkVex AI <onboarding@example.com>"
         )
         self.app_base_url = (
             self._get_optional_env("NEXT_PUBLIC_APP_URL") or "http://localhost:3107"

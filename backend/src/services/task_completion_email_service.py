@@ -62,7 +62,7 @@ class TaskCompletionEmailService:
         task_url = f"{self.app_url}/tasks/{task_id}"
         clips_label = f"{clips_count} clip" if clips_count == 1 else f"{clips_count} clips"
         safe_source_title = escape(source_title.strip()) if source_title else "your video"
-        subject = "Your SupoClip clips are ready"
+        subject = "Your ChunkVex AI clips are ready"
         # What the generation made, as (headline, plain-text headline, count line).
         headline_html = f"Your clips for <strong>{safe_source_title}</strong> are ready."
         headline_text = f"Your clips for {source_title or 'your video'} are ready."
@@ -101,13 +101,13 @@ class TaskCompletionEmailService:
                 f"<p>{headline_html}</p>"
                 f"<p>{escape(count_line)}</p>"
                 f'<p><a href="{escape(task_url)}">{escape(link_label)}</a></p>'
-                "<p>Team SupoClip</p>"
+                "<p>Team ChunkVex AI</p>"
             ),
             text=(
                 f"Hi {first_name},\n\n"
                 f"{headline_text}\n"
                 f"{count_line}\n\n"
                 f"{link_label}: {task_url}\n\n"
-                "Team SupoClip"
+                "Team ChunkVex AI"
             ),
         )

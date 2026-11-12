@@ -369,7 +369,7 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="relative mx-auto aspect-[9/16] w-full max-w-[150px] overflow-hidden rounded-xl bg-[radial-gradient(circle_at_50%_30%,oklch(0.5_0.05_50),oklch(0.2_0.01_50))]" aria-label={t("captions.preview")}>
+            <div className="relative mx-auto aspect-[9/16] w-full max-w-[150px] overflow-hidden rounded-xl bg-[radial-gradient(circle_at_50%_30%,#7b5b4a,#1a1512)]" aria-label={t("captions.preview")}>
               <p
                 className="absolute inset-x-2 top-[70%] text-center font-bold leading-snug"
                 style={{

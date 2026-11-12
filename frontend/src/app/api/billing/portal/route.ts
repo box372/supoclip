@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { monetizationEnabled } from "@/lib/monetization";
 import { getStripeClient } from "@/lib/stripe";
 import Stripe from "stripe";
+import { getServerSession } from "@/server/session";
 
 const APP_STORE_MANAGED_MESSAGE = "Your subscription is managed through the App Store";
 const PAID_SUBSCRIPTION_STATUSES = new Set(["active", "trialing"]);
@@ -52,7 +51,7 @@ export async function POST() {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session?.user?.id || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

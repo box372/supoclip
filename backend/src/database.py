@@ -141,6 +141,26 @@ async def init_db():
                     {"version": version},
                 )
 
+        # One-person installations have no sign-up: tasks reference this user.
+        from .config import get_config
+
+        config = get_config()
+        if config.personal_mode:
+            await conn.execute(
+                text(
+                    """
+                    INSERT INTO users (id, name, email, "emailVerified", plan, subscription_status)
+                    VALUES (:id, :name, :email, true, 'self_host', 'active')
+                    ON CONFLICT (id) DO NOTHING
+                    """
+                ),
+                {
+                    "id": config.personal_user_id,
+                    "name": "Owner",
+                    "email": config.personal_user_email,
+                },
+            )
+
 
 # Close database connections
 async def close_db():

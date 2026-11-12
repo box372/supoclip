@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { monetizationEnabled } from "@/lib/monetization";
 import { getPrismaClient } from "@/server/prisma";
 import { getServerStripeClient } from "@/server/stripe";
 import { syncSubscriptionUpdate } from "@/server/stripe-subscription-sync";
+import { getServerSession } from "@/server/session";
 
 // Undo a scheduled cancellation so the subscription renews as normal.
 export async function POST() {
@@ -12,7 +11,7 @@ export async function POST() {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

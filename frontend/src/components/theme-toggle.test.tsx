@@ -61,18 +61,18 @@ it("switches to light when the app starts dark", async () => {
   expect(document.documentElement).toHaveClass("light");
 });
 
-it("starts light even when the system prefers dark", () => {
+it("starts dark by default", () => {
   navigation.pathname = "/list";
   render(<ThemeProvider><span /></ThemeProvider>);
-  expect(document.documentElement).toHaveClass("light");
+  expect(document.documentElement).toHaveClass("dark");
 });
 
-it("keeps marketing pages light after the app was switched to dark", () => {
-  storage.set("theme", "dark");
+it("pins marketing pages to dark after the app was switched to light", () => {
+  storage.set("theme", "light");
   navigation.pathname = "/sign-in";
   render(<ThemeProvider><span /></ThemeProvider>);
-  expect(document.documentElement).toHaveClass("light");
-  expect(document.documentElement).not.toHaveClass("dark");
+  expect(document.documentElement).toHaveClass("dark");
+  expect(document.documentElement).not.toHaveClass("light");
 });
 
 it("uses the saved theme on app routes", () => {
@@ -88,13 +88,13 @@ function SignedInShell() {
 }
 
 it("uses the saved theme on / once the signed-in app shell mounts", () => {
-  storage.set("theme", "dark");
+  storage.set("theme", "light");
   const view = render(<ThemeProvider><span /></ThemeProvider>);
-  expect(document.documentElement).toHaveClass("light");
-
-  view.rerender(<ThemeProvider><SignedInShell /></ThemeProvider>);
   expect(document.documentElement).toHaveClass("dark");
 
-  view.rerender(<ThemeProvider><span /></ThemeProvider>);
+  view.rerender(<ThemeProvider><SignedInShell /></ThemeProvider>);
   expect(document.documentElement).toHaveClass("light");
+
+  view.rerender(<ThemeProvider><span /></ThemeProvider>);
+  expect(document.documentElement).toHaveClass("dark");
 });

@@ -1,7 +1,7 @@
 import type { Workflow } from "@/lib/workflows";
 
 /**
- * Short tours that introduce a new feature to people who already use SupoClip.
+ * Short tours that introduce a new feature to people who already use ChunkVex AI.
  * Adding one: write an entry here and its text in messages/<locale>/tours.json,
  * and put `data-tour="<target>"` on what each step points at. See docs/feature-tours.md.
  */

@@ -23,6 +23,8 @@ services:
         - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY:-}
         - NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST:-https://eu.i.posthog.com}
         - NEXT_PUBLIC_MAX_VIDEO_UPLOAD_BYTES=${MAX_VIDEO_UPLOAD_BYTES:-4000000000}
+        - NEXT_PUBLIC_PERSONAL_MODE=${PERSONAL_MODE:-false}
+        - NEXT_PUBLIC_PERSONAL_USER_ID=${PERSONAL_USER_ID:-personal-owner}
         # Source map upload to PostHog error tracking; skipped unless both are set.
         - POSTHOG_PERSONAL_API_KEY=${POSTHOG_PERSONAL_API_KEY:-}
         - POSTHOG_PROJECT_ID=${POSTHOG_PROJECT_ID:-}
@@ -75,6 +77,8 @@ services:
       - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY:-}
       - NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST:-https://eu.i.posthog.com}
       - NEXT_PUBLIC_MAX_VIDEO_UPLOAD_BYTES=${MAX_VIDEO_UPLOAD_BYTES:-4000000000}
+      - NEXT_PUBLIC_PERSONAL_MODE=${PERSONAL_MODE:-false}
+      - NEXT_PUBLIC_PERSONAL_USER_ID=${PERSONAL_USER_ID:-personal-owner}
       - STRIPE_CHECKOUT_URL=${STRIPE_CHECKOUT_URL}
       - STRIPE_CUSTOMER_PORTAL_URL=${STRIPE_CUSTOMER_PORTAL_URL}
       - REVENUECAT_WEBHOOK_AUTH_HEADER=${REVENUECAT_WEBHOOK_AUTH_HEADER}
@@ -122,6 +126,10 @@ services:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
       - SUPOCLIP_SERVICE=backend
+      - PERSONAL_MODE=${PERSONAL_MODE:-false}
+      - PERSONAL_USER_ID=${PERSONAL_USER_ID:-personal-owner}
+      - PERSONAL_USER_EMAIL=${PERSONAL_USER_EMAIL:-owner@chunkvex.local}
+      - AI_ANALYSIS_ENABLED=${AI_ANALYSIS_ENABLED:-true}
       - POSTHOG_PROJECT_TOKEN=${POSTHOG_PROJECT_TOKEN:-}
       - POSTHOG_HOST=${POSTHOG_HOST:-https://eu.i.posthog.com}
       - DATABASE_URL=postgresql+asyncpg://supoclip:supoclip_password@postgres:5432/supoclip
@@ -309,12 +317,18 @@ services:
       - ./backend/src:/app/src
       - uploads:/app/uploads
       - clips:/app/clips
+      - whisper_cache:/root/.cache/whisper
       - ./backend/fonts:/app/fonts
       - ./backend/transitions:/app/transitions
     environment: &worker-environment
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
       - SUPOCLIP_SERVICE=worker
+      - PERSONAL_MODE=${PERSONAL_MODE:-false}
+      - PERSONAL_USER_ID=${PERSONAL_USER_ID:-personal-owner}
+      - PERSONAL_USER_EMAIL=${PERSONAL_USER_EMAIL:-owner@chunkvex.local}
+      - AI_ANALYSIS_ENABLED=${AI_ANALYSIS_ENABLED:-true}
+      - WHISPER_MODEL=${WHISPER_MODEL:-base}
       - POSTHOG_PROJECT_TOKEN=${POSTHOG_PROJECT_TOKEN:-}
       - POSTHOG_HOST=${POSTHOG_HOST:-https://eu.i.posthog.com}
       - DATABASE_URL=postgresql+asyncpg://supoclip:supoclip_password@postgres:5432/supoclip
@@ -539,6 +553,16 @@ services:
     restart: unless-stopped
 
   # Ships container logs to Axiom. Opt-in: COMPOSE_PROFILES=axiom + AXIOM_TOKEN.
+  # Optional local LLM for AI hooks and scoring. No API key, no usage cost.
+  # Start with: docker compose --profile ai up -d
+  ollama:
+    image: ollama/ollama
+    profiles: ["ai"]
+    container_name: supoclip-ollama
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+
   vector:
     image: timberio/vector:0.60.0-alpine
     container_name: supoclip-vector
@@ -605,6 +629,11 @@ volumes:
   uploads:
     driver: local
   clips:
+    driver: local
+  # Downloaded local Whisper weights, so a restart does not fetch them again.
+  whisper_cache:
+    driver: local
+  ollama_models:
     driver: local
   redis_data:
     driver: local

@@ -207,7 +207,7 @@ export default function SharedGenerationPage() {
         )}
 
         <section className="relative mt-16 overflow-hidden rounded-3xl bg-stone-950 px-6 py-10 text-white sm:px-10">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_0%,oklch(0.45_0.12_40/0.55),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_0%,rgba(138, 56, 25, 0.55),transparent_60%)]" />
           <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="font-display text-2xl font-bold tracking-tight">{t("ctaTitle")}</h2>

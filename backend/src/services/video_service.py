@@ -599,7 +599,7 @@ class VideoService:
             "relevance_score": 0.25,
             "reasoning": (
                 "AI analysis did not identify a strong standalone segment, "
-                "so SupoClip generated the first available portion of the video."
+                "so ChunkVex AI generated the first available portion of the video."
             ),
             "virality_score": 0,
             "hook_score": 0,
@@ -1160,7 +1160,10 @@ class VideoService:
 
         if progress_callback:
             await progress_callback(
-                50, "Analyzing content with AI...", "processing"
+                50,
+                "Finding moments locally..." if not getattr(runtime_config, "ai_analysis_enabled", True)
+                else "Analyzing content with AI...",
+                "processing",
             )
 
         relevant_parts = None
@@ -1193,6 +1196,22 @@ class VideoService:
                     )
             except Exception:
                 relevant_parts = None
+
+        if relevant_parts is None and not getattr(runtime_config, "ai_analysis_enabled", True):
+            # No model configured: cut evenly spaced, line-aligned windows.
+            from ..local_selection import build_local_analysis
+
+            relevant_parts = build_local_analysis(
+                transcript,
+                file_duration,
+                clip_length=clip_length,
+                max_clips=max_clips,
+                server_max_clips=getattr(runtime_config, "max_clips", None),
+            )
+            logger.info(
+                "Local selection produced %d clip(s) without an AI provider",
+                len(relevant_parts.most_relevant_segments),
+            )
 
         if relevant_parts is None:
             try:

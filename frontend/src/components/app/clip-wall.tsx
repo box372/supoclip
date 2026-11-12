@@ -386,7 +386,7 @@ export function ProcessingPanel({ status, progress, message, startedAt, elapsedS
     <section className="relative isolate" aria-live="polite">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 -inset-y-16 -z-10 overflow-hidden [mask-image:radial-gradient(60%_70%_at_30%_50%,black,transparent)]">
         <div className="aura-blob absolute -top-10 left-[-5%] h-72 w-[60%] rounded-full opacity-45 blur-3xl"
-          style={{ background: `radial-gradient(circle at 40% 50%, oklch(0.87 0.06 ${stepHue(step)}), transparent 65%)` }} />
+          style={{ background: `radial-gradient(circle at 40% 50%, hsl(${stepHue(step)} 65% 82%), transparent 65%)` }} />
       </div>
       <div className="flex items-baseline justify-between gap-6">
         <p className="font-display text-2xl font-bold tracking-tight tabular-nums">{eta}</p>
@@ -438,7 +438,7 @@ export function ProcessingSlots({ status, progress, message, total, className, c
           <div className="relative aspect-[9/16] overflow-hidden rounded-xl bg-stone-100/70 ring-1 ring-black/[0.04] dark:bg-stone-900/60 dark:ring-white/5">
             {i === 0 && (
               <span className="absolute inset-[-30%] opacity-40 blur-2xl transition-[background] duration-1000"
-                style={{ background: `radial-gradient(circle at 50% 60%, oklch(0.87 0.05 ${hue}), transparent 60%)` }} />
+                style={{ background: `radial-gradient(circle at 50% 60%, hsl(${hue} 60% 82%), transparent 60%)` }} />
             )}
           </div>
           <div className="mt-2.5 space-y-1.5 px-0.5">
